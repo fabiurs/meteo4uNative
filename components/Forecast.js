@@ -1,5 +1,5 @@
-import react, {Component} from 'react';
-import { TextInput, Text, View } from 'react-native';
+import {Component} from 'react';
+import { View } from 'react-native';
 import styles from '../style';
 import CurrentDayForecast from './CurrentDayForecast';
 import NextDaysWeather from './NextDaysForecast';
@@ -11,22 +11,37 @@ class Forecast extends Component {
       this.state={
           cityInputName: '',
           dayWeather: '',
-          nextDaysWeather: ''
-      }
+          nextDaysWeather: undefined,
+          infoLoaded: false,
+          showNextDays: false
+        }
   }
 
   componentDidMount(){
      this.setState({dayWeather: this.props.weather["current"]});
      this.setState({nextDaysWeather: this.props.weather["daily"]});
+     this.setState({infoLoaded: true});
+     setTimeout(() => {
+       this.setState({showNextDays: true})
+     }, 700);
   }
 
   render(){
     return (
-        <View style={styles.forecastContainer}> 
-          <CurrentDayForecast weather={this.state.dayWeather}/>
-          {/* {<NextDaysWeather weather={this.state.nextDaysWeather} />} */}
-        </View>
-      );
+      <View style={styles.forecastContainer}> 
+        {
+          this.state.infoLoaded ?
+          <>
+            <CurrentDayForecast weather={this.state.dayWeather}/>
+           {
+             this.state.showNextDays ?  
+               <NextDaysWeather  weather={this.props.weather["daily"]} /> : <></>
+           }
+          </>
+          : <></>
+        }
+      </View>
+    );
   }
 }
 

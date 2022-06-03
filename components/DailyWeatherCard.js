@@ -1,18 +1,35 @@
-import react, {Component} from 'react';
-import { TextInput, Text, View } from 'react-native';
+import React, { useEffect, useRef } from "react";
+import { Animated, Image, Text, View } from 'react-native';
 import styles from '../style';
 
 function DailyWeatherCard(props) {
-{/* <Text style={styles.whiteText}>{props.dataCalendar}</Text>
-          <Image source={{uri: props.weatherImage,}}/>
-          <Text style={styles.whiteText}>Min {props.minTemp} &#8451;</Text>
-          <Text style={styles.whiteText}>Max {props.maxTemp} &#8451;</Text> */}
 
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+  // console.log(props.key)
+    useEffect(() => {
+      Animated.timing(
+        fadeAnim,
+        {
+          toValue: 1,
+          duration: 700,
+          useNativeDriver: false 
+        }
+      ).start();
+    }, [fadeAnim]);
+  
+  //  console.log(props.weather);
+    let dayDate = new Date(props.weather["dt"] * 1000).toDateString();
+    let weatherImg = "http://openweathermap.org/img/wn/" + props.weather["weather"][0]["icon"] + "@2x.png";
     return (
-        <View style={styles.inputContainer}> 
-          <Text>test</Text>
+        <View style={styles.dailyWeatherCard}>
+            <Animated.View style={{ opacity: fadeAnim}}> 
+              <Text style={styles.dayTextDate}>{dayDate}</Text>
+              <Text style={styles.dayTextMain}>{props.weather["weather"][0]["main"]}</Text>
+              <Text style={styles.dayText}>{props.weather["temp"]["min"].toFixed(1)} &#8451; to {props.weather["temp"]["max"].toFixed(1)} &#8451;</Text>
+              <Image style={styles.dayImage} source={{uri: weatherImg,}}/>
+          </Animated.View>
         </View>
-      );
+    );
 }
 
 export default DailyWeatherCard;
